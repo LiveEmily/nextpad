@@ -5,7 +5,7 @@
 
 # Maintainer: LiveEmily <emily@liveemily.com>
 pkgname=nextpad-git
-pkgver=0.0.r7.0998428
+pkgver=0.0.r8.5440ee1
 pkgrel=1
 epoch=
 pkgdesc="Not so powerful text editor I'm working on, inspired by vim and nano."
@@ -41,9 +41,9 @@ build() {
 
 package() {
 	cd nextpad
-	mkdir -p ${pkgdir}/opt/${pkgdir}
-	cp rf * ${pkgdir}/opt/${pkgname}
-	make PREFIX=/usr DESTDIR="${pkgdir}" install
+	mkdir -p ${pkgdir}/opt/${pkgname}
+	cp -rf * ${pkgdir}/opt/${pkgname}
+	make PREFIX=/usr DESTDIR="${pkgdir}"
 	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 	install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
 }
