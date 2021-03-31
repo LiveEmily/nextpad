@@ -19,9 +19,9 @@
 
 /*** defines ***/
 
-#define EMILY_VERSION "0.0.1"
-#define EMILY_TAB_STOP 8
-#define EMILY_QUIT_TIMES 3
+#define NEXTPAD_VERSION "0.0.1"
+#define NEXTPAD_TAB_STOP 8
+#define NEXTPAD_QUIT_TIMES 3
 
 #define CTRL_KEY(k) ((k) & 0x1f)
 
@@ -154,45 +154,45 @@ int editorReadKey() {
     int nread;
     char c;
     while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
-	if(nread == -1 && errno != EAGAIN) die("read");
+        if(nread == -1 && errno != EAGAIN) die("read");
     }
 
     if(c == '\x1b') {
-	char seq[3];
+        char seq[3];
 
-	if(read(STDIN_FILENO, &seq[0], 1) != 1) return '\x1b';
-	if(read(STDIN_FILENO, &seq[1], 1) != 1) return '\x1b';
+        if(read(STDIN_FILENO, &seq[0], 1) != 1) return '\x1b';
+        if(read(STDIN_FILENO, &seq[1], 1) != 1) return '\x1b';
 
-	if(seq[0] == '[') {
-	    if(seq[1] >= '0' && seq[1] <= '9') {
-		if(read(STDIN_FILENO, &seq[2], 1) != 1) return '\x1b';
-		if(seq[2] == '~') {
-		    switch(seq[1]) {
-			case '1': return HOME_KEY;
-			case '3': return DEL_KEY;
-			case '4': return END_KEY;
-			case '5': return PAGE_UP;
-			case '6': return PAGE_DOWN;
-			case '7': return HOME_KEY;
-			case '8': return END_KEY;
-		    }
-		}
-	    } else {
-	        switch (seq[1]) {
-		    case 'A': return ARROW_UP;
-		    case 'B': return ARROW_DOWN;
-		    case 'C': return ARROW_RIGHT;
-		    case 'D': return ARROW_LEFT;
-		    case 'H': return HOME_KEY;
-		    case 'F': return END_KEY;
-	        }
-	    }
+        if(seq[0] == '[') {
+            if(seq[1] >= '0' && seq[1] <= '9') {
+                if(read(STDIN_FILENO, &seq[2], 1) != 1) return '\x1b';
+                if(seq[2] == '~') {
+                    switch(seq[1]) {
+                        case '1': return HOME_KEY;
+                        case '3': return DEL_KEY;
+                        case '4': return END_KEY;
+                        case '5': return PAGE_UP;
+                        case '6': return PAGE_DOWN;
+                        case '7': return HOME_KEY;
+                        case '8': return END_KEY;
+                    }
+                }
+            } else {
+                switch (seq[1]) {
+                    case 'A': return ARROW_UP;
+                    case 'B': return ARROW_DOWN;
+                    case 'C': return ARROW_RIGHT;
+                    case 'D': return ARROW_LEFT;
+                    case 'H': return HOME_KEY;
+                    case 'F': return END_KEY;
+                }
+            }
          } else if(seq[0] == 'O') {
-		switch(seq[1]) {
-		    case 'H': return HOME_KEY;
-		    case 'F': return END_KEY;
-		}
-	 }
+                switch(seq[1]) {
+                    case 'H': return HOME_KEY;
+                    case 'F': return END_KEY;
+                }
+         }
 
          return '\x1b';
     } else {
@@ -398,7 +398,7 @@ int editorRowCxToRx(erow *row, int cx) {
     int j;
     for(j = 0; j < cx; j++) {
 	if(row->chars[j] == '\t')
-	    rx += (EMILY_TAB_STOP - 1) - (rx % EMILY_TAB_STOP);
+	    rx += (NEXTPAD_TAB_STOP - 1) - (rx % NEXTPAD_TAB_STOP);
 	rx++;
     }
     return rx;
@@ -409,7 +409,7 @@ int editorRowRxToCx(erow *row, int rx) {
     int cx;
     for(cx = 0; cx < row->size; cx++){
 	if(row->chars[cx] == '\t')
-	    cur_rx += (EMILY_TAB_STOP - 1) - (cur_rx % EMILY_TAB_STOP);
+	    cur_rx += (NEXTPAD_TAB_STOP - 1) - (cur_rx % NEXTPAD_TAB_STOP);
 	cur_rx++;
 
 	if(cur_rx > rx) return cx;
@@ -424,13 +424,13 @@ void editorUpdateRow(erow *row) {
 	if(row->chars[j] == '\t') tabs++;
 
     free(row->render);
-    row->render = malloc(row->size + tabs*(EMILY_TAB_STOP - 1) + 1);
+    row->render = malloc(row->size + tabs*(NEXTPAD_TAB_STOP - 1) + 1);
 
     int idx = 0;
     for(j = 0; j < row->size; j++) {
 	if(row->chars[j] == '\t') {
 	    row->render[idx++] = ' ';
-	    while(idx % EMILY_TAB_STOP != 0) row->render[idx++] = ' ';
+	    while(idx % NEXTPAD_TAB_STOP != 0) row->render[idx++] = ' ';
 	} else {
 	    row->render[idx++] = row->chars[j];
 	}
@@ -746,7 +746,7 @@ void editorDrawRows(struct abuf *ab) {
 	    if(E.numrows == 0 && y == E.screenrows / 3) {
 	        char welcome[80];
 	        int welcomelen = snprintf(welcome, sizeof(welcome),
-		    "Emily editor -- version %s", EMILY_VERSION);
+		    "Emily editor -- version %s", NEXTPAD_VERSION);
 	        if(welcomelen > E.screencols) welcomelen = E.screencols;
 	        int padding = (E.screencols = welcomelen) / 2;
 	        if(padding) {
@@ -940,7 +940,7 @@ void editorMoveCursor(int key) {
 }
 
 void editorProcessKeypress() {
-    static int quit_times = EMILY_QUIT_TIMES;
+    static int quit_times = NEXTPAD_QUIT_TIMES;
 
     int c = editorReadKey();
 
@@ -1016,7 +1016,7 @@ void editorProcessKeypress() {
 	    break;
     }
 
-    quit_times = EMILY_QUIT_TIMES;
+    quit_times = NEXTPAD_QUIT_TIMES;
 }
 
 /*** init ***/
