@@ -29,21 +29,11 @@ noextract=()
 md5sums=('SKIP')
 validpgpkeys=()
 
-pkgver() {
-	cd "${_pkgname}"
-	printf "0.0.r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-}
-
 build() {
-	cd nextpad
+	cd nextpad-git
 	make
 }
 
 package() {
-	cd nextpad
-	mkdir -p ${pkgdir}/opt/${pkgname}
-	cp -rf * ${pkgdir}/opt/${pkgname}
-	make PREFIX=/usr DESTDIR="${pkgdir}"
-	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-	install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+	install -Dm 0755 -t ${pkgdir}/usr/bin/ nextpad
 }
