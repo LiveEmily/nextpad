@@ -35,5 +35,5 @@ build() {
 }
 
 package() {
-	install -Dm 0755 -t ${pkgdir}/usr/bin/ nextpad
+	install -Dm 0755 -t /usr/bin/ nextpad
 }
