@@ -16,6 +16,7 @@
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 /*** defines ***/
 
@@ -24,6 +25,8 @@
 #define NEXTPAD_QUIT_TIMES 3
 
 #define CTRL_KEY(k) ((k) & 0x1f)
+
+bool INSERT = false;
 
 enum editorKey {
     BACKSPACE = 127,
@@ -930,6 +933,32 @@ void editorMoveCursor(int key) {
 	        E.cy++;
 	    }
 	    break;
+    case 'h':
+	    if(E.cx != 0) {
+		E.cx--;
+	    } else if(E.cy > 0) {
+		E.cy--;
+		E.cx = E.row[E.cy].size;
+	    }
+	    break;
+	case 'l':
+	    if(row && E.cx < row->size){
+		E.cx++;
+	    } else if(row && E.cx == row->size) {
+		E.cy++;
+		E.cx = 0;
+	    }
+	    break;
+	case 'k':
+	    if(E.cy != 0) {
+	        E.cy--;
+	    }
+	    break;
+	case 'j':
+	    if(E.cy < E.numrows) {
+	        E.cy++;
+	    }
+	    break;
     }
 
     row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
@@ -939,81 +968,111 @@ void editorMoveCursor(int key) {
     }
 }
 
-void editorProcessKeypress() {
+void editorProcessKeypress()
+{
     static int quit_times = NEXTPAD_QUIT_TIMES;
 
     int c = editorReadKey();
 
-    switch (c) {
-	case '\r':
-	    editorInsertNewline();
-	    break;
+    if (INSERT == false)
+    {
+        switch (c)
+        {
+            case 'h':
+            case 'j':
+            case 'k':
+            case 'l':
+                editorMoveCursor(c);
+                break;
+                
+            case 'i':
+                INSERT = true;
+                break;
+        }
+    }
+    else if (INSERT = true)
+    {
+        switch (c)
+        {
+        case '\r':
+            editorInsertNewline();
+            break;
 
-	case CTRL_KEY('q'):
-	    if(E.dirty && quit_times > 0) {
-		editorSetStatusMessage("WARNING!!! File has unsaved changes. " "Press Ctrl-Q %d more times to quit.", quit_times);
-		quit_times--;
-		return;
-	    }
-	    write(STDOUT_FILENO, "\x1b[2J", 4);
-	    write(STDOUT_FILENO, "\x1b[H", 3);
-	    exit(0);
-	    break;
+        case CTRL_KEY('q'):
+            if (E.dirty && quit_times > 0)
+            {
+                editorSetStatusMessage("WARNING!!! File has unsaved changes. "
+                                       "Press Ctrl-Q %d more times to quit.",
+                                       quit_times);
+                quit_times--;
+                return;
+            }
+            write(STDOUT_FILENO, "\x1b[2J", 4);
+            write(STDOUT_FILENO, "\x1b[H", 3);
+            exit(0);
+            break;
 
-	case CTRL_KEY('s'):
-	    editorSave();
-	    break;
+        case CTRL_KEY('s'):
+            editorSave();
+            break;
 
-	case HOME_KEY:
-	    E.cx = 0;
-	    break;
+        case HOME_KEY:
+            E.cx = 0;
+            break;
 
-	case END_KEY:
-	    if(E.cy < E.numrows)
-		E.cx = E.row[E.cy].size;
-	    break;
+        case END_KEY:
+            if (E.cy < E.numrows)
+                E.cx = E.row[E.cy].size;
+            break;
 
-	case CTRL_KEY('f'):
-	    editorFind();
-	    break;
+        case CTRL_KEY('f'):
+            editorFind();
+            break;
 
-	case BACKSPACE:
-	case CTRL_KEY('h'):
-	case DEL_KEY:
-	    if(c == DEL_KEY) editorMoveCursor(ARROW_RIGHT);
-	    editorDelChar();
-	    break;
+        case BACKSPACE:
+        case CTRL_KEY('h'):
+        case DEL_KEY:
+            if (c == DEL_KEY)
+                editorMoveCursor(ARROW_RIGHT);
+            editorDelChar();
+            break;
 
-	case PAGE_UP:
-	case PAGE_DOWN:
-	    {
-		if(c == PAGE_UP) {
-		    E.cy = E.rowoff;
-		} else if (c == PAGE_DOWN) {
-		    E.cy = E.rowoff + E.screenrows - 1;
-		   if(E.cy > E.numrows) E.cy = E.numrows;
-		}
+        case PAGE_UP:
+        case PAGE_DOWN:
+        {
+            if (c == PAGE_UP)
+            {
+                E.cy = E.rowoff;
+            }
+            else if (c == PAGE_DOWN)
+            {
+                E.cy = E.rowoff + E.screenrows - 1;
+                if (E.cy > E.numrows)
+                    E.cy = E.numrows;
+            }
 
-		int times = E.screenrows;
-		while(times--)
-		    editorMoveCursor(c == PAGE_UP ? ARROW_UP : ARROW_DOWN);
-	    }
-	    break;
+            int times = E.screenrows;
+            while (times--)
+                editorMoveCursor(c == PAGE_UP ? ARROW_UP : ARROW_DOWN);
+        }
+        break;
 
         case ARROW_UP:
-	case ARROW_DOWN:
-	case ARROW_LEFT:
-	case ARROW_RIGHT:
-	    editorMoveCursor(c);
-	    break;
+        case ARROW_DOWN:
+        case ARROW_LEFT:
+        case ARROW_RIGHT:
+            editorMoveCursor(c);
+            break;
 
-	case CTRL_KEY('l'):
-	case '\x1b':
-	    break;
+        case CTRL_KEY('l'):
+        case '\x1b':
+            INSERT = false;
+            break;
 
-	default:
-	    editorInsertChar(c);
-	    break;
+        default:
+            editorInsertChar(c);
+            break;
+        }
     }
 
     quit_times = NEXTPAD_QUIT_TIMES;
