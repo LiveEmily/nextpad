@@ -1,4 +1,4 @@
-Hi, this file was fully written in nextpad!
+# Hi, this file was fully written in nextpad!
 
 This text editor comes with neat features,
 like fully customisable syntax hightlighting for any file.
