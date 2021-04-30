@@ -27,7 +27,11 @@ cp main /usr/bin/
 
 # ToDo
 
-- [ ] Complete VIM keybindings.
+- [ ] Make shortcuts global.
+- [ ] Use the ~~ducking~~ branch system.
+- [ ] Clean code by using less else statements.
+- [ ] Add some personal comments.
+- [ ] Come up with some personal bindings or shortcuts and implement them correctly.
 - [ ] Fix UI bugs.
 - [ ] Add more syntax highlighting vor .c|.h|.cpp files.
 - [ ] Make syntax highlighting more customisable
