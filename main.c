@@ -990,7 +990,7 @@ void editorProcessKeypress()
                 break;
         }
     }
-    else if (INSERT = true)
+    else if (INSERT == true)
     {
         switch (c)
         {
