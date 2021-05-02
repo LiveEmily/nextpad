@@ -1051,7 +1051,7 @@ void editorProcessKeypress()
         case END_KEY:
             if (E.cy < E.numrows)
                 E.cx = E.row[E.cy].size;
-                break;
+            break;
 
         case CTRL_KEY('f'):
             editorFind();
