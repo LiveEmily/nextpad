@@ -27,8 +27,8 @@ cp main /usr/bin/
 
 # ToDo
 
-- [ ] Make shortcuts global.
-- [ ] Use the ~~ducking~~ branch system.
+- [x] Make shortcuts global.
+- [x] Use the ~~ducking~~ branch system.
 - [ ] Clean code by using less else statements.
 - [ ] Add some personal comments.
 - [ ] Come up with some personal bindings or shortcuts and implement them correctly.
