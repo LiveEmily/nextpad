@@ -982,6 +982,29 @@ void editorProcessKeypress()
     {
         switch (c)
         {
+            case CTRL_KEY('q'):
+                if (E.dirty && quit_times > 0)
+                {
+                    editorSetStatusMessage("WARNING!!! File has unsaved changes. "
+                                       "Press Ctrl-Q %d more times to quit.",
+                                       quit_times);
+                    quit_times--;
+                    return;
+                }
+            
+            write(STDOUT_FILENO, "\x1b[2J", 4);
+            write(STDOUT_FILENO, "\x1b[H", 3);
+            exit(0);
+            break;
+
+            case CTRL_KEY('s'):
+                editorSave();
+            break;
+
+            case CTRL_KEY('f'):
+            editorFind();
+            break;
+
             case 'h':
             case 'j':
             case 'k':
