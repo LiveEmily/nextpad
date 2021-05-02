@@ -31,7 +31,7 @@ make
 
 Place the executable in the binary folder for system wide use **only tested on Arch and Artix**
 ```bash
-install -Dm 0755 -t /usr/bin/ nextpad
+sudo install -Dm 0755 -t /usr/bin/ nextpad
 ```
 
 # How to contribute
