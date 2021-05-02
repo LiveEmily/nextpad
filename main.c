@@ -908,64 +908,68 @@ void editorMoveCursor(int key) {
 
     switch (key) {
 	case ARROW_LEFT:
-	    if(E.cx != 0) {
-		E.cx--;
-	    } else if(E.cy > 0) {
-		E.cy--;
-		E.cx = E.row[E.cy].size;
+	    if(E.cx != 0)
+		    E.cx--;
+	    else if(E.cy > 0) {
+		    E.cy--;
+		    E.cx = E.row[E.cy].size;
 	    }
+
 	    break;
 	case ARROW_RIGHT:
-	    if(row && E.cx < row->size){
-		E.cx++;
-	    } else if(row && E.cx == row->size) {
-		E.cy++;
-		E.cx = 0;
+	    if(row && E.cx < row->size)
+		    E.cx++;
+	    else if(row && E.cx == row->size) {
+		    E.cy++;
+		    E.cx = 0;
 	    }
+        
 	    break;
 	case ARROW_UP:
-	    if(E.cy != 0) {
+	    if(E.cy != 0)
 	        E.cy--;
-	    }
+
 	    break;
 	case ARROW_DOWN:
-	    if(E.cy < E.numrows) {
+	    if(E.cy < E.numrows)
 	        E.cy++;
-	    }
+
 	    break;
     case 'h':
-	    if(E.cx != 0) {
-		E.cx--;
-	    } else if(E.cy > 0) {
-		E.cy--;
-		E.cx = E.row[E.cy].size;
+	    if(E.cx != 0)
+		    E.cx--;
+	    else if(E.cy > 0) {
+		    E.cy--;
+		    E.cx = E.row[E.cy].size;
 	    }
+
 	    break;
 	case 'l':
-	    if(row && E.cx < row->size){
-		E.cx++;
-	    } else if(row && E.cx == row->size) {
-		E.cy++;
-		E.cx = 0;
+	    if(row && E.cx < row->size)
+		    E.cx++;
+	    else if(row && E.cx == row->size) {
+		    E.cy++;
+		    E.cx = 0;
 	    }
+
 	    break;
 	case 'k':
-	    if(E.cy != 0) {
+	    if(E.cy != 0)
 	        E.cy--;
-	    }
+
 	    break;
 	case 'j':
-	    if(E.cy < E.numrows) {
+	    if(E.cy < E.numrows)
 	        E.cy++;
-	    }
+
 	    break;
     }
 
     row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
     int rowlen = row ? row->size : 0;
-    if(E.cx > rowlen) {
-	E.cx = rowlen;
-    }
+    
+    if(E.cx > rowlen)
+	    E.cx = rowlen;
 }
 
 void editorProcessKeypress()
@@ -994,26 +998,27 @@ void editorProcessKeypress()
     {
         switch (c)
         {
-        case '\r':
-            editorInsertNewline();
-            break;
+            case '\r':
+                editorInsertNewline();
+                break;
 
-        case CTRL_KEY('q'):
-            if (E.dirty && quit_times > 0)
-            {
-                editorSetStatusMessage("WARNING!!! File has unsaved changes. "
+            case CTRL_KEY('q'):
+                if (E.dirty && quit_times > 0)
+                {
+                    editorSetStatusMessage("WARNING!!! File has unsaved changes. "
                                        "Press Ctrl-Q %d more times to quit.",
                                        quit_times);
-                quit_times--;
-                return;
-            }
+                    quit_times--;
+                    return;
+                }
+            
             write(STDOUT_FILENO, "\x1b[2J", 4);
             write(STDOUT_FILENO, "\x1b[H", 3);
             exit(0);
             break;
 
-        case CTRL_KEY('s'):
-            editorSave();
+            case CTRL_KEY('s'):
+                editorSave();
             break;
 
         case HOME_KEY:
@@ -1023,7 +1028,7 @@ void editorProcessKeypress()
         case END_KEY:
             if (E.cy < E.numrows)
                 E.cx = E.row[E.cy].size;
-            break;
+                break;
 
         case CTRL_KEY('f'):
             editorFind();
@@ -1041,9 +1046,8 @@ void editorProcessKeypress()
         case PAGE_DOWN:
         {
             if (c == PAGE_UP)
-            {
                 E.cy = E.rowoff;
-            }
+
             else if (c == PAGE_DOWN)
             {
                 E.cy = E.rowoff + E.screenrows - 1;
@@ -1052,6 +1056,7 @@ void editorProcessKeypress()
             }
 
             int times = E.screenrows;
+
             while (times--)
                 editorMoveCursor(c == PAGE_UP ? ARROW_UP : ARROW_DOWN);
         }
@@ -1101,15 +1106,14 @@ void initEditor() {
 int main(int argc, char *argv[]) {
     enableRawMode();
     initEditor();
-    if(argc >= 2) {
-	editorOpen(argv[1]);
-    }
+    if(argc >= 2)
+	    editorOpen(argv[1]);
 
     editorSetStatusMessage("HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
 
     while (1) {
-	editorRefreshScreen();
-	editorProcessKeypress();
+	    editorRefreshScreen();
+	    editorProcessKeypress();
     }
 
     return 0;
