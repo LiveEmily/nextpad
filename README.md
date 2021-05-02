@@ -29,9 +29,9 @@ make
 ```
 ### Optional
 
-Place the executable in the binary folder for system wide use **VERY NOT RECOMMENDED**
+Place the executable in the binary folder for system wide use **only tested on Arch and Artix**
 ```bash
-cp main /usr/bin/
+install -Dm 0755 -t /usr/bin/ nextpad
 ```
 
 # How to contribute
