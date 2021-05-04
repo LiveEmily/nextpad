@@ -6,9 +6,8 @@
 
 Operating System | Build status
 -----------------|-------------
-Linux (Xenial) | ![Image of build](https://travis-ci.com/LiveEmily/nextpad.svg?branch=main)
-Windows | W.I.P.
-MacOs | W.I.P.
+Linux (Xenial) | ![Image of build](https://travis-ci.com/LiveEmily/nextpad.svg?branch=unstable)
+OSX | ![Image of build](https://travis-ci.com/LiveEmily/nextpad.svg?branch=unstable)
 <br>
 
 # [Documentation W.I.P.](https://liveemily.com/nextpad/docs/)
