@@ -1,9 +1,17 @@
-# Nextpad
-Customasible text editor, fully written in C99 from the ground up.
+# Nextpad unstable branch
+## This branch can be really unstable, use at your own risk.
+<br>
 
-![Image of build](https://travis-ci.com/LiveEmily/nextpad.svg?branch=main)
+# Current build status
+
+Operating System | Build status
+-----------------|-------------
+Linux (Xenial) | ![Image of build](https://travis-ci.com/LiveEmily/nextpad.svg?branch=unstable)
+OSX | ![Image of build](https://travis-ci.com/LiveEmily/nextpad.svg?branch=unstable)
+<br>
 
 # [Documentation W.I.P.](https://liveemily.com/nextpad/docs/)
+<br>
 
 # Information
 
@@ -20,10 +28,15 @@ make
 ```
 ### Optional
 
-Place the executable in the binary folder for system wide use **VERY NOT RECOMMENDED**
+Place the executable in the binary folder for system wide use **only tested on Arch and Artix**
 ```bash
-cp main /usr/bin/
+sudo install -Dm 0755 -t /usr/bin/ nextpad
 ```
+
+# How to contribute
+
+If you want to contribute, you can join my Discord server, open an issue, submit a pull request, or message me directly on Discord. A contribution template is in the works and you should see it on this branch within a week or 2. <br>
+[![discord server](https://discord.com/api/guilds/836526974574395402/embed.png?style=banner2)](https://discord.gg/BJ5pav4U9q)
 
 # ToDo
 
@@ -40,5 +53,4 @@ cp main /usr/bin/
 
 # Disclaimer
 
-This project is very new and in very early stages, expect many bugs, errors and issues. If you do find one or would like to contribute, please open an issue, pull request or hit me up at discord. <br>
-[![Discord](https://discord.com/api/guilds/836526974574395402/embed.png?style=banner2)](https://discord.gg/BJ5pav4U9q)
+This project is very new and in very early stages, expect many bugs, errors and issues. If you do find one or would like to contribute, please open an issue, pull request or hit me up at discord. See [How to contribute](#how-to-contribute). <br>
