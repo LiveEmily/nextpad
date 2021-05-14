@@ -17,6 +17,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <ncurses.h>
 
 /*** defines ***/
 
@@ -923,7 +924,7 @@ void editorMoveCursor(int key) {
 		    E.cy++;
 		    E.cx = 0;
 	    }
-        
+
 	    break;
 	case ARROW_UP:
 	    if(E.cy != 0)
@@ -967,7 +968,7 @@ void editorMoveCursor(int key) {
 
     row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
     int rowlen = row ? row->size : 0;
-    
+
     if(E.cx > rowlen)
 	    E.cx = rowlen;
 }
@@ -991,18 +992,27 @@ void editorProcessKeypress()
                     quit_times--;
                     return;
                 }
-            
-            write(STDOUT_FILENO, "\x1b[2J", 4);
-            write(STDOUT_FILENO, "\x1b[H", 3);
-            exit(0);
+
+                write(STDOUT_FILENO, "\x1b[2J", 4);
+                write(STDOUT_FILENO, "\x1b[H", 3);
+                exit(0);
             break;
 
             case CTRL_KEY('s'):
                 editorSave();
             break;
 
+            case HOME_KEY:
+                E.cx = 0;
+            break;
+
+            case END_KEY:
+            if (E.cy < E.numrows)
+                E.cx = E.row[E.cy].size;
+            break;
+
             case CTRL_KEY('f'):
-            editorFind();
+                editorFind();
             break;
 
             case 'h':
@@ -1010,10 +1020,36 @@ void editorProcessKeypress()
             case 'k':
             case 'l':
                 editorMoveCursor(c);
-                break;
-                
+            break;
+
+            case PAGE_UP:
+            case PAGE_DOWN:
+                if (c == PAGE_UP) 
+                    E.cy = E.rowoff;
+
+                else if (c == PAGE_DOWN)
+                {
+                    E.cy = E.rowoff + E.screenrows - 1;
+                    if (E.cy > E.numrows) 
+                        E.cy = E.numrows;
+                }
+
+                int times = E.screenrows;
+
+                while (times--)
+                    editorMoveCursor(c == PAGE_UP ? ARROW_UP : ARROW_DOWN);
+            break;
+
+            case ARROW_UP:
+            case ARROW_DOWN:
+            case ARROW_LEFT:
+            case ARROW_RIGHT:
+                editorMoveCursor(c);
+            break;
+
             case 'i':
                 INSERT = true;
+		editorSetStatusMessage("Insert mode enabled!");
                 break;
         }
     }
@@ -1034,75 +1070,73 @@ void editorProcessKeypress()
                     quit_times--;
                     return;
                 }
-            
-            write(STDOUT_FILENO, "\x1b[2J", 4);
-            write(STDOUT_FILENO, "\x1b[H", 3);
-            exit(0);
+
+                write(STDOUT_FILENO, "\x1b[2J", 4);
+                write(STDOUT_FILENO, "\x1b[H", 3);
+                exit(0);
             break;
 
             case CTRL_KEY('s'):
                 editorSave();
             break;
 
-        case HOME_KEY:
-            E.cx = 0;
+            case HOME_KEY:
+                E.cx = 0;
             break;
 
-        case END_KEY:
+            case END_KEY:
             if (E.cy < E.numrows)
                 E.cx = E.row[E.cy].size;
             break;
 
-        case CTRL_KEY('f'):
-            editorFind();
+            case CTRL_KEY('f'):
+                editorFind();
             break;
 
-        case BACKSPACE:
-        case CTRL_KEY('h'):
-        case DEL_KEY:
-            if (c == DEL_KEY)
-                editorMoveCursor(ARROW_RIGHT);
-            editorDelChar();
+            case BACKSPACE:
+            case CTRL_KEY('h'):
+            case DEL_KEY:
+                if (c == DEL_KEY)
+                    editorMoveCursor(ARROW_RIGHT);
+                editorDelChar();
             break;
 
-        case PAGE_UP:
-        case PAGE_DOWN:
-        {
-            if (c == PAGE_UP)
-                E.cy = E.rowoff;
+            case PAGE_UP:
+            case PAGE_DOWN:
+                if (c == PAGE_UP) 
+                    E.cy = E.rowoff;
 
-            else if (c == PAGE_DOWN)
-            {
-                E.cy = E.rowoff + E.screenrows - 1;
-                if (E.cy > E.numrows)
-                    E.cy = E.numrows;
-            }
+                else if (c == PAGE_DOWN)
+                {
+                    E.cy = E.rowoff + E.screenrows - 1;
+                    if (E.cy > E.numrows) 
+                        E.cy = E.numrows;
+                }
 
-            int times = E.screenrows;
+                int times = E.screenrows;
 
-            while (times--)
-                editorMoveCursor(c == PAGE_UP ? ARROW_UP : ARROW_DOWN);
-        }
-        break;
-
-        case ARROW_UP:
-        case ARROW_DOWN:
-        case ARROW_LEFT:
-        case ARROW_RIGHT:
-            editorMoveCursor(c);
+                while (times--)
+                    editorMoveCursor(c == PAGE_UP ? ARROW_UP : ARROW_DOWN);
             break;
 
-        case CTRL_KEY('l'):
-        case '\x1b':
-            INSERT = false;
+            case ARROW_UP:
+            case ARROW_DOWN:
+            case ARROW_LEFT:
+            case ARROW_RIGHT:
+                editorMoveCursor(c);
             break;
 
-        default:
-            editorInsertChar(c);
+            case CTRL_KEY('l'):
+            case '\x1b':
+                INSERT = false;
+		editorSetStatusMessage("Insert mode disabled!");
+            break;
+
+            default:
+                editorInsertChar(c);
             break;
         }
     }
-
     quit_times = NEXTPAD_QUIT_TIMES;
 }
 
